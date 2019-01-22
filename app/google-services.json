@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "22399860513",
+    "firebase_url": "https://ollixo.firebaseio.com",
+    "project_id": "ollixo",
+    "storage_bucket": "ollixo.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22399860513:android:abfdb452211ce8dc",
+        "android_client_info": {
+          "package_name": "com.lixo.reinaldo.ollixo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22399860513-dgu7fu9h0djiiusgtcrcap7naa3lv9m7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.lixo.reinaldo.ollixo",
+            "certificate_hash": "99af854f36a6a6bbf97548d7c7589f4ab1938971"
+          }
+        },
+        {
+          "client_id": "22399860513-20t5li3f01jb95h0el30f4fq5blo1o6i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBW-9jH1S7O0jZIirLGifWbcq241iAoGMU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22399860513-20t5li3f01jb95h0el30f4fq5blo1o6i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

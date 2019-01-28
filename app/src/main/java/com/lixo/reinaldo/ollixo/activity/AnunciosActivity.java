@@ -41,7 +41,7 @@ public class AnunciosActivity extends AppCompatActivity {
 
         return super.onPrepareOptionsMenu(menu);
     }
-    //clique de item cadastrar
+    //clique de item do menu a ser escolhido
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -52,6 +52,9 @@ public class AnunciosActivity extends AppCompatActivity {
             case R.id.menu_sair:
                 autenticacao.signOut();
                 invalidateOptionsMenu();
+                break;
+            case R.id.menu_anuncios:
+                startActivity(new Intent(getApplicationContext(),MeusAnunciosActivity.class));
                 break;
         }
 

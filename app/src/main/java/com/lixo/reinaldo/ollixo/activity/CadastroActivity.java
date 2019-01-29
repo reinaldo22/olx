@@ -26,9 +26,7 @@ public class CadastroActivity extends AppCompatActivity {
     private EditText campoEmail, campoSenha;
     private Switch tipoAcesso;
 
-    //firebase
     private FirebaseAuth autenticacao;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,81 +38,94 @@ public class CadastroActivity extends AppCompatActivity {
 
         botaoAcessar.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onClick(View v) {
 
                 String email = campoEmail.getText().toString();
                 String senha = campoSenha.getText().toString();
 
-                //Caso o email não estiver vazio
-                if( !email.isEmpty()){
-                    if(!senha.isEmpty()){
+                if( !email.isEmpty() ){
+                    if( !senha.isEmpty() ){
 
-                        //Caso o estado do switch esteja checado
+                        //Verifica estado do switch
+                        if( tipoAcesso.isChecked() ){//Cadastro
 
-                        if(tipoAcesso.isChecked()){ //CADASTRO
-                                autenticacao.createUserWithEmailAndPassword(
-
-                                        email,senha
-
-
-                                ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                    @Override
-                                    public void onComplete( Task<AuthResult> task) {
-                                        if(task.isSuccessful()){
-                                            Toast.makeText(CadastroActivity.this, "Cadastro realizado com sucesso !",
-                                                    Toast.LENGTH_SHORT).show();
-                                        }else{
-                                           String erroExcessao = "";
-
-                                           try {
-
-                                               throw task.getException();
-
-                                           }catch (FirebaseAuthWeakPasswordException e) {
-                                                erroExcessao = " Digite uma senha mais forte!";
-                                           }catch (FirebaseAuthInvalidCredentialsException e){
-                                                erroExcessao = " Por favor , digite um email válido";
-                                           }catch (FirebaseAuthUserCollisionException e){
-                                                erroExcessao = " Esta conta já esta cadastrada";
-                                        }catch (Exception e){
-                                                erroExcessao = " Ao cadastrar usuário: "+e.getMessage();
-                                                e.printStackTrace();
-                                           }
-                                            Toast.makeText(CadastroActivity.this, "Erro:"+erroExcessao,
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                });
-                        }else{//LOGIN, caso o switch nao esteja marcado
-                            autenticacao.signInWithEmailAndPassword(
-                                    email,senha
+                            autenticacao.createUserWithEmailAndPassword(
+                                    email, senha
                             ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        Toast.makeText(CadastroActivity.this, "Logado com sucesso!",
-                                                Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(getApplicationContext(),AnunciosActivity.class));
+                                    if( task.isSuccessful() ){
 
-                                    }else{
-                                        Toast.makeText(CadastroActivity.this, "Erro ao fazer login "+task.getException(),
+                                        Toast.makeText(CadastroActivity.this,
+                                                "Cadastro realizado com sucesso!",
+                                                Toast.LENGTH_SHORT).show();
+
+                                        //Direcionar para a tela principal do App
+
+                                    }else {
+
+                                        String erroExcecao = "";
+
+                                        try{
+                                            throw task.getException();
+                                        }catch (FirebaseAuthWeakPasswordException e){
+                                            erroExcecao = "Digite uma senha mais forte!";
+                                        }catch (FirebaseAuthInvalidCredentialsException e){
+                                            erroExcecao = "Por favor, digite um e-mail válido";
+                                        }catch (FirebaseAuthUserCollisionException e){
+                                            erroExcecao = "Este conta já foi cadastrada";
+                                        } catch (Exception e) {
+                                            erroExcecao = "ao cadastrar usuário: "  + e.getMessage();
+                                            e.printStackTrace();
+                                        }
+
+                                        Toast.makeText(CadastroActivity.this,
+                                                "Erro: " + erroExcecao ,
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
 
+                        }else {//Login
+
+                            autenticacao.signInWithEmailAndPassword(
+                                    email, senha
+                            ).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+
+                                    if( task.isSuccessful() ){
+
+                                        Toast.makeText(CadastroActivity.this,
+                                                "Logado com sucesso",
+                                                Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(getApplicationContext(), AnunciosActivity.class));
+
+                                    }else {
+                                        Toast.makeText(CadastroActivity.this,
+                                                "Erro ao fazer login : " + task.getException() ,
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+
+                                }
+                            });
+
                         }
 
-                    }else{
-                        Toast.makeText(CadastroActivity.this,"Preencha a senha!",Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(CadastroActivity.this,
+                                "Preencha a senha!",
+                                Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(CadastroActivity.this,"Preencha o E-mail",Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(CadastroActivity.this,
+                            "Preencha o E-mail!",
+                            Toast.LENGTH_SHORT).show();
                 }
-
 
             }
         });
+
     }
 
     private void inicializaComponentes(){
@@ -123,4 +134,5 @@ public class CadastroActivity extends AppCompatActivity {
         botaoAcessar = findViewById(R.id.buttonAcesso);
         tipoAcesso = findViewById(R.id.switchAcesso);
     }
+
 }

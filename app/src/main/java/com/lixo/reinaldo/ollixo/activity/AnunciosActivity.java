@@ -19,46 +19,46 @@ public class AnunciosActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_anunciosctivity);
 
-        //Configuracos iniciais
+        //Configurações iniciais
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
+
         //autenticacao.signOut();
+
     }
-    //método para carregar o menu da tela
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main,menu);
+        getMenuInflater().inflate(R.menu.menu_main, menu);
         return super.onCreateOptionsMenu(menu);
     }
-    //Verifica se usuario esta logado e aparece alguns recursos
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
 
-        if(autenticacao.getCurrentUser() == null){//usuario deslogado
-            menu.setGroupVisible(R.id.group_deslogado, true);
-        }else{
+        if( autenticacao.getCurrentUser() == null ){//usuario deslogado
+            menu.setGroupVisible(R.id.group_deslogado,true);
+        }else {//Usuario logado
             menu.setGroupVisible(R.id.group_logado, true);
         }
 
         return super.onPrepareOptionsMenu(menu);
     }
-    //clique de item do menu a ser escolhido
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
-            case R.id.menu_cadastrar:
-                startActivity(new Intent(getApplicationContext(),CadastroActivity.class));
+        switch ( item.getItemId() ){
+            case R.id.menu_cadastrar :
+                startActivity( new Intent(getApplicationContext(), CadastroActivity.class));
                 break;
-            case R.id.menu_sair:
+            case R.id.menu_sair :
                 autenticacao.signOut();
                 invalidateOptionsMenu();
                 break;
-            case R.id.menu_anuncios:
+            case R.id.menu_anuncios :
                 startActivity(new Intent(getApplicationContext(),MeusAnunciosActivity.class));
                 break;
         }
-
-
 
         return super.onOptionsItemSelected(item);
     }

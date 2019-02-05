@@ -21,7 +21,16 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.blackcat.currencyedittext.CurrencyEditText;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.lixo.reinaldo.ollixo.R;
+import com.lixo.reinaldo.ollixo.helper.ConfiguracaoFirebase;
 import com.lixo.reinaldo.ollixo.helper.Permissoes;
 import com.lixo.reinaldo.ollixo.model.Anuncio;
 import com.santalu.maskedittext.MaskEditText;
@@ -39,16 +48,21 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     private ImageView imagem1,imagem2,imagem3;
     private Spinner campoEstado, campoCategoria;
     private Anuncio anuncio;
+    private StorageReference storage;
 
     private String[] permissoes = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
     private List<String> listaFotosRecuperadas = new ArrayList<>();
+    private List<String> listaUrlFotos= new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastrar_anuncio);
+
+        //configuracoes iniciais
+        storage = ConfiguracaoFirebase.getFirebaseStorage();
 
         //Validar permissões
         Permissoes.validarPermissoes(permissoes, this, 1);
@@ -72,6 +86,42 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
 
 
 
+    }
+
+    private void salvarFotoStorage(final String urlImagem, final int tamanhoLIsta, int i) {
+            final StorageReference imagemAnuncio = storage.child("imagens")
+                    .child("anuncios")
+                    .child(anuncio.getIdAnuncio())
+                    .child("imagem"+i);
+
+
+            UploadTask uploadTask = imagemAnuncio.putFile(Uri.parse(urlImagem));
+            uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+                @Override
+                public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                    if( !task.isSuccessful()){
+                        throw task.getException();
+                    }
+                    return imagemAnuncio.getDownloadUrl();
+                }
+
+            }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+                @Override
+                public void onComplete(@NonNull Task<Uri> task) {
+                    if(task.isSuccessful()){
+                        Uri url = task.getResult();
+                        listaUrlFotos.add(url.toString());
+
+                        if(tamanhoLIsta == listaUrlFotos.size()){
+                            anuncio.setFotos(listaUrlFotos);
+                            anuncio.salvar();
+
+                        }
+                    }else{
+                        exibirMensagemErro("Falha ao enviar a foto");
+                    }
+                }
+            });
     }
 
     private Anuncio configurarAnuncio(){

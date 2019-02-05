@@ -1,5 +1,7 @@
 package com.lixo.reinaldo.ollixo.model;
 
+import com.lixo.reinaldo.ollixo.helper.ConfiguracaoFirebase;
+import com.google.firebase.database.DatabaseReference;
 import java.util.List;
 
 public class Anuncio {
@@ -16,6 +18,19 @@ public class Anuncio {
 
 
     public Anuncio() {
+
+        DatabaseReference anuncioRef = ConfiguracaoFirebase.getFirebase().child("meus_anuncios");
+        setIdAnuncio( anuncioRef.push().getKey() );
+    }
+
+    public void salvar(){
+        String idUsuario = ConfiguracaoFirebase.getIdUsuario();
+
+        DatabaseReference anuncioRef = ConfiguracaoFirebase.getFirebase().child("meus_anuncios");
+        anuncioRef.child(idUsuario)
+                .child(idAnuncio)
+                .setValue(this);
+
     }
 
 

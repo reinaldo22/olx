@@ -129,7 +129,7 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
         String estado = campoEstado.getSelectedItem().toString();
         String categoria = campoCategoria.getSelectedItem().toString();
         String titulo = campoTitulo.getText().toString();
-        String valor = String.valueOf(campoValor.getRawValue());
+        String valor = campoValor.getText().toString();
         String telefone = campoTelefone.getText().toString();
         String descricao = campoDescricao.getText().toString();
 
@@ -147,12 +147,13 @@ public class CadastrarAnuncioActivity extends AppCompatActivity
     public void validarDadosAnuncio(View view){
 
         anuncio = configurarAnuncio();
+        String valor = String.valueOf(campoValor.getRawValue());
 
         if( listaFotosRecuperadas.size() != 0){
             if( !anuncio.getEstado().isEmpty()){
                 if( !anuncio.getCategoria().isEmpty()){
                     if( !anuncio.getTitulo().isEmpty()){
-                        if( !anuncio.getValor().isEmpty() && !anuncio.getValor().equals("0")){
+                        if( !valor.isEmpty() && !valor.equals("0")){
                             if( !anuncio.getTelefone().isEmpty() && anuncio.getTelefone().length() >= 10){
                                 if( !anuncio.getDescricao().isEmpty()){
                                         salvarAnuncio();

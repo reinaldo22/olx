@@ -1,5 +1,6 @@
 package com.lixo.reinaldo.ollixo.activity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,6 +12,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,11 +21,14 @@ import com.google.firebase.database.ValueEventListener;
 import com.lixo.reinaldo.ollixo.R;
 import com.lixo.reinaldo.ollixo.adapter.AdapterAnuncios;
 import com.lixo.reinaldo.ollixo.helper.ConfiguracaoFirebase;
+import com.lixo.reinaldo.ollixo.helper.RecyclerItemClickListener;
 import com.lixo.reinaldo.ollixo.model.Anuncio;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import dmax.dialog.SpotsDialog;
 
 public class MeusAnunciosActivity extends AppCompatActivity {
 
@@ -31,6 +36,7 @@ public class MeusAnunciosActivity extends AppCompatActivity {
     private List<Anuncio> anuncios = new ArrayList<>();
     private AdapterAnuncios adapterAnuncios;
     private DatabaseReference anuncioUsuarioRef;
+    private AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,9 +70,42 @@ public class MeusAnunciosActivity extends AppCompatActivity {
 
         //metodo que pega os anuncios
         recuperarAnuncios();
+
+        recyclerAnuncios.addOnItemTouchListener( new RecyclerItemClickListener(this,
+                recyclerAnuncios, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+
+            }
+
+            @Override
+            public void onLongItemClick(View view, int position) {
+
+                Anuncio anuncioSelecionado = anuncios.get(position);
+                anuncioSelecionado.remover();
+
+                adapterAnuncios.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        }));
+
+
     }
 
     private void recuperarAnuncios() {
+
+        dialog = new SpotsDialog.Builder()
+                .setContext(this)
+                .setMessage("Carregando anúncios...")
+                .setCancelable(false)
+                .build();
+        dialog.show();
+
+
 
         anuncioUsuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -77,6 +116,7 @@ public class MeusAnunciosActivity extends AppCompatActivity {
                 }
                 Collections.reverse(anuncios);
                 adapterAnuncios.notifyDataSetChanged();
+                dialog.dismiss();
             }
 
             @Override

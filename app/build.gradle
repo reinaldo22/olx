@@ -45,6 +45,11 @@ dependencies {
 
     //dependencia dialog progresso
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+
+
+    //dependencia picasso
+    implementation 'com.squareup.picasso:picasso:2.71828'
 }
 
 apply plugin: 'com.google.gms.google-services'

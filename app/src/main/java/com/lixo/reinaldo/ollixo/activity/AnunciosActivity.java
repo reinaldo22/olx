@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
@@ -24,6 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.lixo.reinaldo.ollixo.R;
 import com.lixo.reinaldo.ollixo.adapter.AdapterAnuncios;
 import com.lixo.reinaldo.ollixo.helper.ConfiguracaoFirebase;
+import com.lixo.reinaldo.ollixo.helper.RecyclerItemClickListener;
 import com.lixo.reinaldo.ollixo.model.Anuncio;
 
 import java.util.ArrayList;
@@ -63,8 +65,37 @@ public class AnunciosActivity extends AppCompatActivity {
         recyclerAnunciosPublicos.setHasFixedSize(true);
         adapterAnuncios = new AdapterAnuncios(listaAnuncios, this);
         recyclerAnunciosPublicos.setAdapter(adapterAnuncios);
+
         recuperarAnunciosPublicos();
 
+        //Aplicar evento de clique no anuncio
+        recyclerAnunciosPublicos.addOnItemTouchListener(
+                new RecyclerItemClickListener(
+                        this,
+                        recyclerAnunciosPublicos,
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                                Anuncio anuncioSelecionado = listaAnuncios.get(position);
+
+                                Intent i = new Intent(AnunciosActivity.this, DetalhesProdutoActivity.class);
+                                i.putExtra("anuncioSelecionado",anuncioSelecionado);
+                                startActivity(i);
+                            }
+
+                            @Override
+                            public void onLongItemClick(View view, int position) {
+
+                            }
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                            }
+                        }
+                )
+        );
     }
 
     public void filtrarPorCategoria(View view){
